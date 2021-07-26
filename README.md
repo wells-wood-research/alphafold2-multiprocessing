@@ -28,10 +28,7 @@ python run_fold.py --workers 30 --num_models 1 --input_file /scratch/sequence-re
 
 # Credits 
 
-This work is hacked together from the ColabFold notebook from which 
-dependency_install.bsh, msa2.bsh and run_fold.py are obtained. run_fold.py 
-was modified to allow for multiprocessing and running multiple structures 
-automatically.
+This work is hacked together by [Rokas Petrenas](https://github.com/rokaske199)and [Leonardo Castorina](https://github.com/universvm) from the ColabFold notebook from which dependency_install.bsh, msa2.bsh and run_fold.py are obtained. run_fold.py was modified to allow for multiprocessing and running multiple structures automatically.
 
 As with ColabFold we would like to credit and thank:
 
