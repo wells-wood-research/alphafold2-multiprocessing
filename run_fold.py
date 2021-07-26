@@ -26,12 +26,16 @@ from ipywidgets import interact, fixed
 import shutil
 import json
 
+from multiprocessing import Pool
+
+
 
 
 def run_model(query_sequence:str,num_models:int,jobname:str):
   '''Predicts structure using AlphaFold2'''
  
   # remove whitespaces
+  print(f"Starting {jobname}")
   query_sequence = "".join(query_sequence.split())
   query_sequence = re.sub(r'[^a-zA-Z]','', query_sequence).upper()
 
@@ -218,9 +222,17 @@ def predict_structure(prefix, feature_dict,model_params, do_relax=True, random_s
   return plddts_ranked
   
 if __name__=='__main__':
+  WORKERS = 34
   with open('/scratch/sequence-recovery-benchmark/monomers_af.json') as file:
     predicted_sequence_dict = json.load(file)
-  for x in predicted_sequence_dict:
-    print(f'Starting {x}.')
-    run_model(predicted_sequence_dict[x],1,x)
 
+  with Pool(processes=WORKERS) as p:
+
+    p.starmap(
+      run_model,
+      zip(
+        list(predicted_sequence_dict.values()),
+        repeat(1),
+        list(predicted_sequence_dict.keys()),
+      ))
+    p.close()
