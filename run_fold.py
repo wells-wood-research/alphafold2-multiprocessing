@@ -3,6 +3,9 @@ import os.path
 import re
 import warnings
 import subprocess
+import argparse
+from pathlib import Path
+from Bio import SeqIO
 
 warnings.filterwarnings("ignore")
 
@@ -261,19 +264,43 @@ def predict_structure(prefix, feature_dict, model_params, do_relax=True, random_
     return plddts_ranked
 
 
-if __name__ == "__main__":
-    WORKERS = 34
-    with open("/scratch/sequence-recovery-benchmark/monomers_af.json") as file:
-        predicted_sequence_dict = json.load(file)
+def main(args):
+    # Load file and check it exists:
+    args.input_file = Path(args.input_file)
+    assert args.input_file.exists(), f"File not found at {args.input_file}."
+    if args.input_file.suffix == ".json":
+        predicted_sequence_dict = json.load(args.input_file.suffix)
+    elif args.input_file.suffix == ".fasta":
+        predicted_sequence_dict = {}
+        for record in SeqIO.parse(args.input_file.suffix, "fasta"):
+            predicted_sequence_dict[record.id] = str(record.seq)
+    else:
+        assert args.input_file.suffix == ".json", "Format not found. Only accept Fasta or Json."
 
-    with Pool(processes=WORKERS) as p:
-
+    with Pool(processes=args.workers) as p:
         p.starmap(
             run_model,
             zip(
                 list(predicted_sequence_dict.values()),
-                repeat(1),
+                repeat(args.num_models),
                 list(predicted_sequence_dict.keys()),
             ),
         )
         p.close()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="AlphaFold2 Local")
+    parser.add_argument(
+        "--workers", type=int, default=8, help="Number of workers to use (default: 8)"
+    )
+    parser.add_argument(
+        "--num_models", type=int, default=1, help="Number of alphafold models to use (default: 1)"
+    )
+    parser.add_argument(
+        "--input_file", type=str, help="Path to input file .fasta or .json"
+    )
+    params = parser.parse_args()
+    main(params)
+
+    with open("/scratch/sequence-recovery-benchmark/monomers_af.json") as file:
+        predicted_sequence_dict = json.load(file)
