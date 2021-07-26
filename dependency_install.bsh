@@ -1,0 +1,44 @@
+E_AMBER=False
+USE_MSA=True
+USE_TEMPLATES=False
+
+ 
+
+if [ ! -f AF2_READY ]; then
+  # install dependencies
+  pip -q install biopython
+  pip -q install dm-haiku
+  pip -q install ml-collections
+  pip -q install py3Dmol
+
+ 
+
+  # download model
+  if [ ! -d "alphafold/" ]; then
+    git clone https://github.com/deepmind/alphafold.git --quiet
+    mv alphafold alphafold_
+    mv alphafold_/alphafold .
+    # remove "END" from PDBs, otherwise biopython complains
+    sed -i "s/pdb_lines.append('END')//" /content/alphafold/common/protein.py
+    sed -i "s/pdb_lines.append('ENDMDL')//" /content/alphafold/common/protein.py
+  fi
+
+ 
+
+  # download model params (~1 min)
+  if [ ! -d "params/" ]; then
+    wget -qnc https://storage.googleapis.com/alphafold/alphafold_params_2021-07-14.tar
+    mkdir params
+    tar -xf alphafold_params_2021-07-14.tar -C params/
+    rm alphafold_params_2021-07-14.tar
+  fi
+  touch AF2_READY
+fi
+# download libraries for interfacing with MMseqs2 API
+if [ ${USE_MSA} == "True" ] || [ ${USE_TEMPLATES} == "True" ]; then
+  if [ ! -f MMSEQ2_READY ]; then
+    apt-get -qq -y update 2>&1 1>/dev/null
+    apt-get -qq -y install jq curl zlib1g gawk 2>&1 1>/dev/null
+    touch MMSEQ2_READY
+  fi
+fi
