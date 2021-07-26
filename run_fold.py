@@ -269,10 +269,11 @@ def main(args):
     args.input_file = Path(args.input_file)
     assert args.input_file.exists(), f"File not found at {args.input_file}."
     if args.input_file.suffix == ".json":
-        predicted_sequence_dict = json.load(args.input_file.suffix)
+        with open(args.input_file, "r") as input_file:
+            predicted_sequence_dict = json.load(input_file)
     elif args.input_file.suffix == ".fasta":
         predicted_sequence_dict = {}
-        for record in SeqIO.parse(args.input_file.suffix, "fasta"):
+        for record in SeqIO.parse(args.input_file, "fasta"):
             predicted_sequence_dict[record.id] = str(record.seq)
     else:
         assert args.input_file.suffix == ".json", "Format not found. Only accept Fasta or Json."
