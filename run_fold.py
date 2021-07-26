@@ -301,6 +301,3 @@ if __name__ == "__main__":
     )
     params = parser.parse_args()
     main(params)
-
-    with open("/scratch/sequence-recovery-benchmark/monomers_af.json") as file:
-        predicted_sequence_dict = json.load(file)
