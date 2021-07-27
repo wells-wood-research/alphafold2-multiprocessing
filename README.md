@@ -1,3 +1,5 @@
+Before starting, please read the disclaimer at the end.
+
 # Installing AF2 locally
 
 ## Dependencies and MSA
@@ -35,3 +37,8 @@ As with ColabFold we would like to credit and thank:
 - RoseTTAFold and AlphaFold team for doing an excellent job open sourcing the software. 
 - Also credit to [David Koes](https://github.com/dkoes) for his awesome [py3Dmol](https://3dmol.csb.pitt.edu/) plugin, without whom these notebooks would be quite boring!
 - A colab by Sergey Ovchinnikov (@sokrypton), Milot Mirdita (@milot_mirdita) and Martin Steinegger (@thesteinegger).
+
+# Disclaimer
+
+As per https://twitter.com/thesteinegger/status/1420055602970075138 be 
+mindful of how you use this repository. 
