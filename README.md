@@ -41,4 +41,7 @@ As with ColabFold we would like to credit and thank:
 # Disclaimer
 
 As per https://twitter.com/thesteinegger/status/1420055602970075138 be 
-mindful of how you use this repository. 
+mindful of how you use this repository. The API is currently supported by 
+only one server handling multiple thousands of requests per day. Refrain 
+from using this tool until they have improved the API (we will keep this up 
+to date!) 
